@@ -1,0 +1,28 @@
+# argocd/projects/taxcalc.yaml
+# Narrow scope for Task 1: dev only, one source repo, no cluster-scoped
+# resources beyond the Namespace our own base manifests declare.
+# Task 2 expands destinations/RBAC for staging + prod.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: taxcalc
+  namespace: argocd
+spec:
+  description: Tax Liability platform apps
+
+  sourceRepos:
+    - file:///Users/smuruganind/uptime-bootcamp/taxcalc-config
+
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: taxcalc-dev
+
+  # Only cluster-scoped kind our base manifests create is the Namespace
+  # itself (00-namespace.yaml). Everything else here is namespaced.
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
